@@ -1,0 +1,62 @@
+﻿------- メモ用紙 -------
+
+
+■ ログインユーザ
+[1]  ログインユーザの ARN    ：
+[2]  アクセスキー ID         ：
+[3]  シークレットアクセスキー：
+
+
+■ S3 バケット
+[4]  バケット名：
+[5]  ARN       ：
+
+
+■ SES
+[6]  メールアドレス                        ：
+[7]  送信用ユーザのアクセスキー ID         ：
+[8]  送信用ユーザのシークレットアクセスキー：
+
+
+■ STS ロール
+[9] ARN     ：
+
+
+■ Lambda 関数
+[10] 関数名    ：
+[11] ARN       ：
+
+
+------- コピペ用 -------
+■ p.15 信頼関係設定
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "[1]"   //////////////////// 変更忘れずに
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+
+
+■ p.28 S3 CORS
+<CORSConfiguration>
+    <CORSRule>
+        <AllowedOrigin>*</AllowedOrigin>
+        <AllowedMethod>GET</AllowedMethod>
+        <AllowedMethod>PUT</AllowedMethod>
+        <AllowedHeader>*</AllowedHeader>
+    </CORSRule>
+</CORSConfiguration>

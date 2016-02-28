@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="js/aws-sdk.js"></script>
+    <script type="text/javascript">
+      var session_token;
+      var user_id;
+      var access_key_id;
+      var secret_access_key;
+
+      AWS.config.update( {
+        accessKeyId: 'xxxxxxxxxxxxxxxxxxxx',  // cheat [2]
+        secretAccessKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' // cheat [3]
+        }
+      );
+
+      var sts = new AWS.STS();
+
+      var params = {
+        RoleArn: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', // cheat [9]
+        RoleSessionName: 'foobar', /* required */
+        DurationSeconds: 1800
+      };
+      sts.assumeRole(params, function(err, data) {
+        if (err) {
+          document.write(err);
+          console.log(data);
+
+        } else {
+          document.getElementById('akid').innerText = data.Credentials.AccessKeyId;
+          document.getElementById('sak').innerText = data.Credentials.SecretAccessKey;
+          document.getElementById('session_token').innerText = data.Credentials.SessionToken;
+          document.getElementById('expire').innerText = data.Credentials.Expiration;
+
+          session_token = data.Credentials.SessionToken;
+          access_key_id = data.Credentials.AccessKeyId;
+          secret_access_key = data.Credentials.SecretAccessKey;
+        }
+      });
+
+      function generateLink() {
+        var user_id = document.getElementById('user_name').value;
+        var link_tag = document.getElementById('hyperlink');
+        var encoded_query = encodeURI('user_id=' + user_id + '&session_token=' + session_token + '&akid=' + access_key_id + '&sak=' + secret_access_key);
+        var href = 'guest.html?' + encoded_query;
+        link_tag.innerHTML = '<a href="' + href + '">' + href + '</a>';
+      }
+
+    </script>
+  </head>
+
+  <body>
+    <table>
+      <tr>
+      	<td>AccesskeyId:</td>
+      	<td id="akid"></td>
+      <tr/>
+      <tr>
+      	<td>SecretAccessKey:</td>
+      	<td id="sak"></td>
+      <tr/>
+      <tr>
+      	<td>SessionToken:</td>
+      	<td id="session_token"></td>
+      <tr/>
+      <tr>
+      	<td>ExpiresOn:</td>
+      	<td id="expire"></td>
+      <tr/>
+    </table>
+    <table>
+      <tr>
+        <td>
+          <p>ユーザ名：</p>
+        </td>
+        <td>
+          <input type="text" id="user_name" size="40"></input>
+        </td>
+      </tr>
+    </table>
+    <button onclick="generateLink();">URL 発行</button>
+    <p id='hyperlink'></p>
+
+    <script type="text/javascript">
+
+    </script>
+  </body>
+
+</html>

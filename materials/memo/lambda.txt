@@ -1,0 +1,35 @@
+﻿var aws = require('aws-sdk');
+var ses = new aws.SES({
+    apiVersion: '2010-12-01',
+    accessKeyId: 'xxxxxxxxxxxxxxxxxxxx', // cheat [7]
+    secretAccesskey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', // cheat [8]
+    region: 'us-west-2'
+});
+
+exports.handler = function(event, context) {
+    var bucket = event.Records[0].s3.bucket.name;
+    var key = event.Records[0].s3.object.key;
+    var eParams = {
+        Destination: {
+            ToAddresses: ["xxxxxxxxxxxxxxxxx"] // cheat [6]
+        },
+        Message: {
+            Body: {
+                Text: {
+                    Data: "File arrived!\nFilename: " + key + " in " + bucket
+                }
+            },
+            Subject: {
+                Data: "File Arrived!"
+            }
+        },
+        Source: "xxxxx@example.com"  // cheat [6]
+    };
+    ses.sendEmail(eParams, function(err, data) {
+        if (err) {
+            console.log(err);
+        } else {
+            context.done();
+        }
+    });
+};
